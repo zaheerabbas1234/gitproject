@@ -1,77 +1,101 @@
-public class ArrayStackDemo {
-
-    // Stack interface
-    public interface Stack {
-        void push(Object ob);
-        Object pop();
-        Object peek();
-        boolean isEmpty();
-        int size();
+public class QueueDemo {
+    
+    // Queue interface
+    public interface Queue { 
+        void insert(Object ob); 
+        Object remove(); 
+        Object peek(); 
+        boolean isEmpty(); 
+        int size(); 
     }
-
-    // ArrayStack class implementing the Stack interface
-    public static class ArrayStack implements Stack {
-        private Object[] a; // stack array
-        private int top; // stack top
+    
+    // ArrayQueue class implementing the Queue interface
+    public static class ArrayQueue implements Queue { 
+        private int maxSize; // maximum queue size 
+        private Object[] que; // queue is an array 
+        private int front; 
+        private int rear; 
+        private int count; // count of items in queue (queue size) 
         
-        public ArrayStack(int n) { // constructor
-            a = new Object[n]; // create stack array
-            top = -1; // no items in the stack
+        public ArrayQueue(int s) { // constructor 
+            maxSize = s; 
+            que = new Object[maxSize]; 
+            front = 0; 
+            rear = -1; 
+            count = 0; 
+        } 
+        
+        public void insert(Object item) { // add item at rear of queue 
+            if (count == maxSize) { 
+                System.out.println("Queue is Full"); 
+                return; 
+            } 
+            rear = (rear + 1) % maxSize; 
+            que[rear] = item; 
+            count++; 
+        } 
+        
+        public Object remove() { // delete item from front of queue 
+            if (isEmpty()) { 
+                System.out.println("Queue is Empty"); 
+                return null; 
+            } 
+            Object tmp = que[front]; // save item to be deleted 
+            que[front] = null; // make deleted item’s cell empty 
+            front = (front + 1) % maxSize; 
+            count--; 
+            return tmp; 
         }
         
-        public void push(Object item) { // add an item on top of stack
-            if (top == a.length - 1) {
-                System.out.println("Stack is full");
-                return;
+        public Object peek() { // peek at front of the queue 
+            if (isEmpty()) { 
+                System.out.println("Queue is Empty"); 
+                return null; 
+            } 
+            return que[front]; 
+        } 
+        
+        public boolean isEmpty() { // true if the queue is empty 
+            return (count == 0); 
+        } 
+        
+        public int size() { // current number of items in the queue 
+            return count; 
+        } 
+        
+        public void displayAll() { 
+            System.out.print("Queue: "); 
+            for (int i = 0; i < count; i++) {
+                System.out.print(que[(front + i) % maxSize] + " ");
             }
-            top++; // increment top
-            a[top] = item; // insert an item
-        }
-        
-        public Object pop() { // remove an item from top of stack
-            if (isEmpty()) {
-                System.out.println("Stack is empty");
-                return null;
-            }
-            Object item = a[top]; // access top item
-            top--; // decrement top
-            return item;
-        }
-        
-        public Object peek() { // get top item of stack
-            if (isEmpty()) return null;
-            return a[top];
-        }
-        
-        public boolean isEmpty() { // true if stack is empty
-            return (top == -1);
-        }
-        
-        public int size() { // returns number of items in the stack
-            return top + 1;
-        }
+            System.out.println(); 
+        } 
     }
 
-    // Main class to demonstrate the stack
-    public static void main(String[] args) {
-        ArrayStack stk = new ArrayStack(4); // create stack of size 4
-        Object item;
-        
-        stk.push('A'); // push 3 items onto stack
-        stk.push('B');
-        stk.push('C');
-        System.out.println("size(): " + stk.size());
-        
-        item = stk.pop(); // delete item
-        System.out.println(item + " is deleted");
-        
-        stk.push('D'); // add three more items to the stack
-        stk.push('E');
-        stk.push('F');
-        System.out.println(stk.pop() + " is deleted");
-        
-        stk.push('G'); // push one item
-        item = stk.peek(); // get top item from the stack
-        System.out.println(item + " is on top of stack");
-    }
+    // Main class to demonstrate the queue
+    public static void main(String[] args) { 
+        // queue holds a max of 5 items 
+        ArrayQueue q = new ArrayQueue(5); 
+        Object item; 
+        q.insert('A'); 
+        q.insert('B'); 
+        q.insert('C'); 
+        q.displayAll(); 
+        item = q.remove(); // delete item 
+        System.out.println(item + " is deleted"); 
+        item = q.remove(); 
+        System.out.println(item + " is deleted"); 
+        q.displayAll(); 
+        q.insert('D'); // insert 3 more items 
+        q.insert('E'); 
+        q.insert('F'); 
+        q.displayAll(); 
+        item = q.remove(); 
+        System.out.println(item + " is deleted"); 
+        q.displayAll(); 
+        System.out.println("peek(): " + q.peek()); 
+        q.insert('G'); 
+        q.displayAll(); 
+        System.out.println("Queue size: " + q.size()); 
+    } 
 }
