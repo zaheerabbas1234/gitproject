@@ -1,101 +1,58 @@
-public class QueueDemo {
-    
-    // Queue interface
-    public interface Queue { 
-        void insert(Object ob); 
-        Object remove(); 
-        Object peek(); 
-        boolean isEmpty(); 
-        int size(); 
-    }
-    
-    // ArrayQueue class implementing the Queue interface
-    public static class ArrayQueue implements Queue { 
-        private int maxSize; // maximum queue size 
-        private Object[] que; // queue is an array 
-        private int front; 
-        private int rear; 
-        private int count; // count of items in queue (queue size) 
-        
-        public ArrayQueue(int s) { // constructor 
-            maxSize = s; 
-            que = new Object[maxSize]; 
-            front = 0; 
-            rear = -1; 
-            count = 0; 
-        } 
-        
-        public void insert(Object item) { // add item at rear of queue 
-            if (count == maxSize) { 
-                System.out.println("Queue is Full"); 
-                return; 
-            } 
-            rear = (rear + 1) % maxSize; 
-            que[rear] = item; 
-            count++; 
-        } 
-        
-        public Object remove() { // delete item from front of queue 
-            if (isEmpty()) { 
-                System.out.println("Queue is Empty"); 
-                return null; 
-            } 
-            Object tmp = que[front]; // save item to be deleted 
-            que[front] = null; // make deleted item’s cell empty 
-            front = (front + 1) % maxSize; 
-            count--; 
-            return tmp; 
-        }
-        
-        public Object peek() { // peek at front of the queue 
-            if (isEmpty()) { 
-                System.out.println("Queue is Empty"); 
-                return null; 
-            } 
-            return que[front]; 
-        } 
-        
-        public boolean isEmpty() { // true if the queue is empty 
-            return (count == 0); 
-        } 
-        
-        public int size() { // current number of items in the queue 
-            return count; 
-        } 
-        
-        public void displayAll() { 
-            System.out.print("Queue: "); 
-            for (int i = 0; i < count; i++) {
-                System.out.print(que[(front + i) % maxSize] + " ");
-            }
-            System.out.println(); 
-        } 
+package com.password;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+@SpringBootApplication
+public class JdbcApplication {
+
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        SpringApplication.run(JdbcApplication.class, args);
+        runDatabaseQuery();  // Call the method to run the database query
     }
 
-    // Main class to demonstrate the queue
-    public static void main(String[] args) { 
-        // queue holds a max of 5 items 
-        ArrayQueue q = new ArrayQueue(5); 
-        Object item; 
-        q.insert('A'); 
-        q.insert('B'); 
-        q.insert('C'); 
-        q.displayAll(); 
-        item = q.remove(); // delete item 
-        System.out.println(item + " is deleted"); 
-        item = q.remove(); 
-        System.out.println(item + " is deleted"); 
-        q.displayAll(); 
-        q.insert('D'); // insert 3 more items 
-        q.insert('E'); 
-        q.insert('F'); 
-        q.displayAll(); 
-        item = q.remove(); 
-        System.out.println(item + " is deleted"); 
-        q.displayAll(); 
-        System.out.println("peek(): " + q.peek()); 
-        q.insert('G'); 
-        q.displayAll(); 
-        System.out.println("Queue size: " + q.size()); 
-    } 
+    private static void runDatabaseQuery() throws ClassNotFoundException, SQLException {
+        
+                 Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            // Establish a connection to the database
+                 Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "zaheer", "abbas");
+                 Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT * FROM Student");
+
+                // Process the ResultSet
+                while (rs.next()) {
+                    // Retrieve data from each column
+                    int stdRollNo = rs.getInt("STD_ROLL_NO");
+                    String course = rs.getString("COURSE");
+                    String grade = rs.getString("GRADE");
+                    int hibernate = rs.getInt("HIBERNATE");
+                    String name = rs.getString("NAME");
+                    float percentage = rs.getFloat("PERCENTAGE");
+                    String result = rs.getString("RESULT");
+                    int spring = rs.getInt("SPRING");
+                    int springBoot = rs.getInt("SPRINGBOOT");
+                    int total = rs.getInt("TOTAL");
+
+                    // Print the data
+                    System.out.println("Roll No: " + stdRollNo +
+                            ", Course: " + course +
+                            ", Grade: " + grade +
+                            ", Hibernate: " + hibernate +
+                            ", Name: " + name +
+                            ", Percentage: " + percentage +
+                            ", Result: " + result +
+                            ", Spring: " + spring +
+                            ", Spring Boot: " + springBoot +
+                            ", Total: " + total);
+                }
+            
+}
+
 }
